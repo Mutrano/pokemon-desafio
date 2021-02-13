@@ -21,16 +21,42 @@ public class PokeAPIService {
 		return new Pokemon(json.get("name").asText(),json.get("sprites").get("front_default").asText());
 	}
 	public String getRandomPokemonByType(String type) {
-		System.out.println(uri.concat("type/"+type));
+		//System.out.println(uri.concat("type/"+type));
 		JsonNode json =  http.sendRequest(uri.concat("type/"+type));
 
 		JsonNode pokemons = json.get("pokemon");
-		System.out.println(pokemons);
+		//System.out.println(pokemons);
 		final int size =pokemons.size()-1;
 		final int random = (int) (Math.random() * size) ;
-		System.out.println(random);
+		//System.out.println(random);
 		final JsonNode randomPokemon=pokemons.get(random).get("pokemon");
-		System.out.println(randomPokemon);
+		//System.out.println(randomPokemon);
 		return randomPokemon.get("url").asText();
+	}
+	public String getPokemonTypeByTemperature(double temperature) {
+		if(temperature<5) {
+			return "ice";
+		}
+		else if(temperature>=5 && temperature<10) {
+			return "water";
+		}
+		else if(temperature>=12 && temperature<15) {
+			return "grass";
+		}
+		else if(temperature>=15 && temperature<21) {
+			return "ground";
+		}
+		else if(temperature>=23 && temperature<27) {
+			return "bug";
+		}
+		else if(temperature>=27 && temperature<33) {
+			return "rock";
+		}
+		else if(temperature>33) {
+			return "fire";
+		}
+		else {
+			return "normal";
+		}
 	}
 }
