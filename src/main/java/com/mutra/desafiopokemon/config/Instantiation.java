@@ -21,12 +21,5 @@ public class Instantiation implements CommandLineRunner{
 	
 	@Override
 	public void run(String... args) throws Exception {
-		City city =mapService.getCityByGeoCoord("29.1738672", "-82.2268486");
-		List<String> wetConditions = city.getConditions().stream().
-				filter( x-> (x.equals("Rain") || x.equals("Drizzle")|| x.equals("Thunderstorm"))).collect(Collectors.toList());
-		System.out.println(wetConditions);
-		
-		System.out.println(city.getConditions());
-		System.out.println(city.getTemperature());
 	}
 }

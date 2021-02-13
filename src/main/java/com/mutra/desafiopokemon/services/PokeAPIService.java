@@ -17,8 +17,13 @@ public class PokeAPIService {
 	
 	public Pokemon findByUrl(String url) {
 		JsonNode json = http.sendRequest(url);
-		System.out.println(json);
-		return new Pokemon(json.get("name").asText(),json.get("sprites").get("front_default").asText());
+		JsonNode types = json.get("types");
+		Pokemon pokemon = new Pokemon(json.get("name").asText(),json.get("sprites").get("front_default").asText());
+		for(int i =0 ;i<types.size();i++) {
+			pokemon.getTypes().add(types.get(i).get("type").get("name").asText());
+		}
+//		System.out.println(json);
+		return pokemon;
 	}
 	public String getRandomPokemonByType(String type) {
 		//System.out.println(uri.concat("type/"+type));
