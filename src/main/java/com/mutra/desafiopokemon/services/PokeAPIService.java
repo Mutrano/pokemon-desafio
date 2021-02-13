@@ -1,6 +1,8 @@
 package com.mutra.desafiopokemon.services;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,30 +17,40 @@ public class PokeAPIService {
 	
 	final String uri = "https://pokeapi.co/api/v2/";
 	
-	public Pokemon findByUrl(String url) {
-		JsonNode json = http.sendRequest(url);
+	public Pokemon getPokemonById(String id) {
+		JsonNode json = http.sendRequest(uri+"pokemon/"+id);
 		JsonNode types = json.get("types");
-		Pokemon pokemon = new Pokemon(json.get("name").asText(),json.get("sprites").get("front_default").asText());
+		String name = json.get("species").get("name").asText();
+		String imageUrl = json.get("sprites").get("other").get("official-artwork").get("front_default").asText();
+		if(imageUrl==null) {
+			imageUrl=json.get("sprites").get("front_default").asText();
+		}
+		Pokemon pokemon = new Pokemon(Integer.parseInt(id),name, imageUrl);
 		for(int i =0 ;i<types.size();i++) {
 			pokemon.getTypes().add(types.get(i).get("type").get("name").asText());
 		}
 //		System.out.println(json);
 		return pokemon;
 	}
-	public String getRandomPokemonByType(String type) {
+	public String getRandomPokemonIdByType(String type) {
 		//System.out.println(uri.concat("type/"+type));
-		JsonNode json =  http.sendRequest(uri.concat("type/"+type));
-
+		JsonNode json =  http.sendRequest(uri+"type/"+type);
+		
 		JsonNode pokemons = json.get("pokemon");
+		List<String> pokemonIds= filterPokemons(pokemons);
 		//System.out.println(pokemons);
-		final int size =pokemons.size()-1;
+		final int size =pokemonIds.size()-1;
 		final int random = (int) (Math.random() * size) ;
 		//System.out.println(random);
-		final JsonNode randomPokemon=pokemons.get(random).get("pokemon");
+	//	final JsonNode randomPokemon=pokemons.get(random).get("pokemon");
 		//System.out.println(randomPokemon);
-		return randomPokemon.get("url").asText();
+	//	return randomPokemon.get("url").asText();
+		return pokemonIds.get(random);
 	}
 	public String getPokemonTypeByTemperature(double temperature) {
+		List<String> remainingTypes = Arrays.asList("normal","fighting","flying","poison","psychic","dragon","ghost","dark","steel","fairy");
+		System.out.println(remainingTypes);
+		
 		if(temperature<5) {
 			return "ice";
 		}
@@ -61,7 +73,31 @@ public class PokeAPIService {
 			return "fire";
 		}
 		else {
-			return "normal";
+			int random = (int) (Math.random() * remainingTypes.size());
+			System.out.println(random);
+			return remainingTypes.get(random);
 		}
 	}
+	public List<String> filterPokemons(JsonNode pokemons) {
+		List<Integer> list = new ArrayList<>();
+		List<String> output= new ArrayList<>();
+		for(int i =0 ; i<pokemons.size();i++) {
+			String entry = pokemons.get(i).get("pokemon").get("url").asText();
+			String[] entries = entry.split("/");
+			entry = entries[6];
+			list.add(Integer.parseInt(entry));
+		}
+	//	System.out.println(list);
+	//	System.out.println(((list.size()/3) *2) );
+		int i = ((list.size()/3) *2);
+		while(i<list.size() && list.get(i)<10000) {
+			i++;
+		}
+		
+		list = list.subList(0, i);
+		list.forEach( x-> output.add(x.toString()));
+	//	System.out.println(output);
+		return output;
+	}
+	
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Pokemon implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	private Integer id;
 	private String name;
 	private String imageUrl;
 	private List<String> types = new ArrayList<String>();
@@ -15,7 +15,8 @@ public class Pokemon implements Serializable{
 		
 	}
 
-	public Pokemon(String name,String imageUrl) {
+	public Pokemon(Integer id,String name,String imageUrl) {
+		this.id=id;
 		this.name = name;
 		this.imageUrl = imageUrl;
 	}
@@ -45,12 +46,19 @@ public class Pokemon implements Serializable{
 		this.types = types;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Override
 	public String toString() {
-		return "Pokemon [name=" + name + ", imageUrl=" + imageUrl + ", types=" + types + "]";
+		return "Pokemon [id=" + id + ", name=" + name + ", imageUrl=" + imageUrl + ", types=" + types + "]";
 	}
 	
-
 	
 
 	

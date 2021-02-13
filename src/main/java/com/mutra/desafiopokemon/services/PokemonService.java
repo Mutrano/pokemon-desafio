@@ -38,8 +38,8 @@ public class PokemonService {
 		
 	}
 	private Pokemon getPokemon(String type) {
-		String pokemonUrl = pokeAPIService.getRandomPokemonByType(type);
-		Pokemon pokemon = pokeAPIService.findByUrl(pokemonUrl);
+		String pokemonId = pokeAPIService.getRandomPokemonIdByType(type);
+		Pokemon pokemon = pokeAPIService.getPokemonById(pokemonId);
 		return pokemon;
 	}
 }
